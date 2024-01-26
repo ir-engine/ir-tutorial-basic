@@ -5,46 +5,36 @@ import {
   defineState,
   dispatchAction,
   getMutableState,
-  receiveActions,
-  useHookstate,
   none,
-  getState
+  useHookstate
 } from '@etherealengine/hyperflux'
-import { defineSystem } from '@etherealengine/engine/src/ecs/functions/SystemFunctions'
 
 import { EntityUUID } from '@etherealengine/common/src/interfaces/EntityUUID'
-import { isClient } from '@etherealengine/engine/src/common/functions/getEnvironment'
 
-import { matches, string } from '@etherealengine/engine/src/common/functions/MatchesUtils'
 import { NetworkTopics } from '@etherealengine/engine/src/networking/classes/Network'
 import { WorldNetworkAction } from '@etherealengine/engine/src/networking/functions/WorldNetworkAction'
 
 import { PhysicsSystem } from '@etherealengine/engine/src/physics/PhysicsModule'
-import { Physics } from '@etherealengine/engine/src/physics/classes/Physics'
 
-import { Vector3 } from 'three'
-import { UUIDComponent } from '@etherealengine/engine/src/scene/components/UUIDComponent'
-import { getComponent, setComponent } from '@etherealengine/engine/src/ecs/functions/ComponentFunctions'
-import { TransformComponent } from '@etherealengine/engine/src/transform/components/TransformComponent'
-import { VisibleComponent } from '@etherealengine/engine/src/scene/components/VisibleComponent'
+import { isClient } from '@etherealengine/common/src/utils/getEnvironment'
+import { defineSystem, getComponent, setComponent } from '@etherealengine/ecs'
 import { NameComponent } from '@etherealengine/engine/src/scene/components/NameComponent'
 import { PrimitiveGeometryComponent } from '@etherealengine/engine/src/scene/components/PrimitiveGeometryComponent'
-import { ColliderComponent } from '@etherealengine/engine/src/scene/components/ColliderComponent'
-import { ColliderDesc, RigidBodyDesc } from '@dimforge/rapier3d-compat'
-import { PhysicsState } from '@etherealengine/engine/src/physics/state/PhysicsState'
-import { RigidBodyComponent } from '@etherealengine/engine/src/physics/components/RigidBodyComponent'
-import { getInteractionGroups } from '@etherealengine/engine/src/physics/functions/getInteractionGroups'
-import { CollisionGroups, DefaultCollisionMask } from '@etherealengine/engine/src/physics/enums/CollisionGroups'
+import { UUIDComponent } from '@etherealengine/engine/src/scene/components/UUIDComponent'
+import { VisibleComponent } from '@etherealengine/engine/src/scene/components/VisibleComponent'
+import { TransformComponent } from '@etherealengine/engine/src/transform/components/TransformComponent'
 
 //
 // Description of the format of a spawn action to create a artifact
 //
 
-const spawnAction = defineAction({
-  ...WorldNetworkAction.spawnObject.actionShape,
-  prefab: 'ee.basic.ball',
-  $topic: NetworkTopics.world
-})
+class BasicActions {
+  static spawnAction = defineAction({
+    ...WorldNetworkAction.spawnObject.actionShape,
+    prefab: 'ee.basic.ball',
+    $topic: NetworkTopics.world
+  })
+}
 
 //
 // Global state that tracks locally spawned or destroyed artifacts by using action receptors
@@ -52,21 +42,17 @@ const spawnAction = defineAction({
 
 export const BasicState = defineState({
   name: 'ee.basic.BasicState',
-  initial: {} as Record< EntityUUID, {} >,
-  receptors: [
-    [
-      spawnAction,
-      (state, action: typeof spawnAction.matches._TYPE) => {
-        state[action.entityUUID].merge({})
-      }
-    ],
-    [
-      WorldNetworkAction.destroyObject,
-      (state, action: typeof WorldNetworkAction.destroyObject.matches._TYPE) => {
-        state[action.entityUUID].set(none)
-      }
-    ]
-  ]
+  initial: {} as Record<EntityUUID, {}>,
+  receptors: {
+    onSpawnAction: BasicActions.spawnAction.receive((action) => {
+      const state = getMutableState(BasicState)
+      state[action.entityUUID].merge({})
+    }),
+    onDestroyObject: WorldNetworkAction.destroyObject.receive((action) => {
+      const state = getMutableState(BasicState)
+      state[action.entityUUID].set(none)
+    })
+  }
 })
 
 //
@@ -79,7 +65,7 @@ const ArtifactReactor = ({ entityUUID }: { entityUUID: EntityUUID }) => {
     const entity = UUIDComponent.getEntityByUUID(entityUUID)
     setComponent(entity, TransformComponent)
     setComponent(entity, VisibleComponent)
-    setComponent(entity, NameComponent,'hello')
+    setComponent(entity, NameComponent, 'hello')
     setComponent(entity, PrimitiveGeometryComponent, { geometryType: 1 })
 
     /*
@@ -104,15 +90,15 @@ const ArtifactReactor = ({ entityUUID }: { entityUUID: EntityUUID }) => {
   
     */
 
-    if(isClient) return
+    if (isClient) return
 
     // positions are networked intrinsically
 
-    const x = Math.random()*10
+    const x = Math.random() * 10
     const y = 0
-    const z = Math.random()*10
-    const transform = getComponent(entity,TransformComponent)
-    transform.position.set(x,y,z)
+    const z = Math.random() * 10
+    const transform = getComponent(entity, TransformComponent)
+    transform.position.set(x, y, z)
 
     // forces are networked intrinsically
 
@@ -120,7 +106,6 @@ const ArtifactReactor = ({ entityUUID }: { entityUUID: EntityUUID }) => {
     //const direction = new Vector3( Math.sin(angle),0,Math.cos(angle))
     //const velocity = 0.025 + Math.random()*0.01
     //rigidBody.body.applyImpulse(direction.multiplyScalar(velocity), true)
-
   }, [])
   return null
 }
@@ -148,15 +133,13 @@ let counter = 0
 //
 
 const execute = () => {
-  receiveActions(BasicState)
-
-  if(isClient) return
+  if (isClient) return
   counter++
-  if(counter&255) return
+  if (counter & 255) return
 
   const entityUUID = `basic-${counter}` as EntityUUID
   const prefab = 'ee.basic.ball'
-  const action = spawnAction({ entityUUID, prefab })
+  const action = BasicActions.spawnAction({ entityUUID, prefab })
   dispatchAction(action)
 }
 
