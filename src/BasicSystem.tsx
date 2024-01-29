@@ -18,11 +18,11 @@ import { PhysicsSystem } from '@etherealengine/engine/src/physics/PhysicsModule'
 
 import { isClient } from '@etherealengine/common/src/utils/getEnvironment'
 import { defineSystem, getComponent, setComponent } from '@etherealengine/ecs'
-import { NameComponent } from '@etherealengine/engine/src/scene/components/NameComponent'
 import { PrimitiveGeometryComponent } from '@etherealengine/engine/src/scene/components/PrimitiveGeometryComponent'
-import { UUIDComponent } from '@etherealengine/engine/src/scene/components/UUIDComponent'
-import { VisibleComponent } from '@etherealengine/engine/src/scene/components/VisibleComponent'
 import { TransformComponent } from '@etherealengine/engine/src/transform/components/TransformComponent'
+import { NameComponent } from '@etherealengine/engine/src/common/NameComponent'
+import { UUIDComponent } from '@etherealengine/engine/src/common/UUIDComponent'
+import { VisibleComponent } from '@etherealengine/engine/src/renderer/components/VisibleComponent'
 
 //
 // Description of the format of a spawn action to create a artifact
