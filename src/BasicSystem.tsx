@@ -11,18 +11,18 @@ import {
 
 import { EntityUUID } from '@etherealengine/common/src/interfaces/EntityUUID'
 
-import { NetworkTopics } from '@etherealengine/engine/src/networking/classes/Network'
-import { WorldNetworkAction } from '@etherealengine/engine/src/networking/functions/WorldNetworkAction'
+import { NetworkTopics } from '@etherealengine/spatial/src/networking/classes/Network'
+import { WorldNetworkAction } from '@etherealengine/spatial/src/networking/functions/WorldNetworkAction'
 
-import { PhysicsSystem } from '@etherealengine/engine/src/physics/PhysicsModule'
+import { PhysicsSystem } from '@etherealengine/spatial/src/physics/PhysicsModule'
 
 import { isClient } from '@etherealengine/common/src/utils/getEnvironment'
 import { defineSystem, getComponent, setComponent } from '@etherealengine/ecs'
 import { PrimitiveGeometryComponent } from '@etherealengine/engine/src/scene/components/PrimitiveGeometryComponent'
-import { TransformComponent } from '@etherealengine/engine/src/transform/components/TransformComponent'
-import { NameComponent } from '@etherealengine/engine/src/common/NameComponent'
-import { UUIDComponent } from '@etherealengine/engine/src/common/UUIDComponent'
-import { VisibleComponent } from '@etherealengine/engine/src/renderer/components/VisibleComponent'
+import { TransformComponent } from '@etherealengine/spatial/src/transform/components/TransformComponent'
+import { NameComponent } from '@etherealengine/spatial/src/common/NameComponent'
+import { UUIDComponent } from '@etherealengine/spatial/src/common/UUIDComponent'
+import { VisibleComponent } from '@etherealengine/spatial/src/renderer/components/VisibleComponent'
 
 //
 // Description of the format of a spawn action to create a artifact
