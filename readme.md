@@ -1,22 +1,22 @@
 # Ethereal Engine Basic
 
 ## Installation
-
-1) Add Project to Ethereal Engine. All Ethereal Engine projects are mounted in the /packages/projects/projects sub-folder of Ethereal Engine. Using bash you could add this project using the following command:
-
-```
-cd etherealengine/packages/projects/projects
-gh repo clone EtherealEngine/ee-tutorial-basic
-cd ../../../
+1) Add the project to Ethereal Engine  
+   _All Ethereal Engine projects are mounted in the /packages/projects/projects sub-folder._
+```bash
+cd etherealengine
+git clone https://github.com/EtherealEngine/ee-tutorial-basic packages/projects/projects
 ```
 
-2) Make sure you are in the root folder for Ethereal. Then run Ethereal Engine itself. There are several ways to do this. With a fresh repo from github you could do the following (from the Ethereal folder):
-
-```
+2) Run Ethereal Engine
+```bash
 npm install
 npm run dev
 ```
+You can now find the tutorial in the projects section of the studio.
 
-3) From the web admin panel of Ethereal Engine create a 'location' for the project. See https://localhost:3000/admin . Map the project to the name 'basic'.
 
-4) Run the project on the web by visiting it with the URL you created. See https://localhost:3000/location/basic
+### _Optional: Create a 'location' route for the project_  
+
+3) Go to the web admin panel of Ethereal Engine at https://localhost:3000/admin, and map the project to the name 'basic'.  
+4) Run the project on the web by opening the URL you just created: https://localhost:3000/location/basic  
