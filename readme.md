@@ -5,7 +5,7 @@
    _All Ethereal Engine projects are mounted in the /packages/projects/projects sub-folder._
 ```bash
 cd etherealengine
-git clone https://github.com/EtherealEngine/ee-tutorial-basic packages/projects/projects
+git clone https://github.com/EtherealEngine/ee-tutorial-basic packages/projects/projects/ee-tutorial-basic
 ```
 
 2) Run Ethereal Engine
