@@ -5,6 +5,7 @@ import {
   defineState,
   dispatchAction,
   getMutableState,
+  getState,
   none,
   useHookstate
 } from '@etherealengine/hyperflux'
@@ -14,35 +15,43 @@ import { EntityUUID } from '@etherealengine/common/src/interfaces/EntityUUID'
 import { NetworkTopics } from '@etherealengine/spatial/src/networking/classes/Network'
 import { WorldNetworkAction } from '@etherealengine/spatial/src/networking/functions/WorldNetworkAction'
 
-import { PhysicsSystem } from '@etherealengine/spatial/src/physics/PhysicsModule'
-
 import { isClient } from '@etherealengine/common/src/utils/getEnvironment'
-import { defineSystem, getComponent, setComponent } from '@etherealengine/ecs'
+import { PresentationSystemGroup, defineSystem, getComponent, setComponent } from '@etherealengine/ecs'
+import { ECSState } from '@etherealengine/ecs/src/ECSState'
 import { PrimitiveGeometryComponent } from '@etherealengine/engine/src/scene/components/PrimitiveGeometryComponent'
-import { TransformComponent } from '@etherealengine/spatial/src/transform/components/TransformComponent'
+import { GeometryTypeEnum } from '@etherealengine/engine/src/scene/constants/GeometryTypeEnum'
 import { NameComponent } from '@etherealengine/spatial/src/common/NameComponent'
 import { UUIDComponent } from '@etherealengine/spatial/src/common/UUIDComponent'
+import { NetworkState } from '@etherealengine/spatial/src/networking/NetworkState'
+import { ColliderComponent } from '@etherealengine/spatial/src/physics/components/ColliderComponent'
+import { RigidBodyComponent } from '@etherealengine/spatial/src/physics/components/RigidBodyComponent'
 import { VisibleComponent } from '@etherealengine/spatial/src/renderer/components/VisibleComponent'
+import { TransformComponent } from '@etherealengine/spatial/src/transform/components/TransformComponent'
+import { Vector3 } from 'three'
 
-//
-// Description of the format of a spawn action to create a artifact
-//
+/**
+ * Basic actions to spawn and destroy objects
+ * This extends and naturally utilizes the functionality in EntityNetworkState
+ */
 
-class BasicActions {
-  static spawnAction = defineAction({
-    ...WorldNetworkAction.spawnObject.actionShape,
-    prefab: 'ee.basic.ball',
-    $topic: NetworkTopics.world
-  })
+const BasicActions = {
+  spawnAction: defineAction(
+    WorldNetworkAction.spawnObject.extend({
+      type: 'ee.basic.SPAWN_BALL',
+      $topic: NetworkTopics.world
+    })
+  )
 }
 
-//
-// Global state that tracks locally spawned or destroyed artifacts by using action receptors
-//
+/**
+ * Global state that tracks locally spawned or destroyed artifacts by using action receptors
+ */
 
-export const BasicState = defineState({
+const BasicState = defineState({
   name: 'ee.basic.BasicState',
+
   initial: {} as Record<EntityUUID, {}>,
+
   receptors: {
     onSpawnAction: BasicActions.spawnAction.receive((action) => {
       const state = getMutableState(BasicState)
@@ -55,101 +64,80 @@ export const BasicState = defineState({
   }
 })
 
-//
-// A reactor such that each basic state record has an associated a visual artifact
-//
+/**
+ * A reactor such that each basic state record has an associated a visual artifact
+ */
 
 const ArtifactReactor = ({ entityUUID }: { entityUUID: EntityUUID }) => {
-  const basicState = useHookstate(getMutableState(BasicState)[entityUUID])
+  /** Entity creation and destruction is handled by EntityNetworkState */
+  const entity = UUIDComponent.useEntityByUUID(entityUUID)
+
   useEffect(() => {
-    const entity = UUIDComponent.getEntityByUUID(entityUUID)
-    setComponent(entity, TransformComponent)
+    if (!entity) return
+
+    setComponent(entity, TransformComponent, { scale: new Vector3(0.1, 0.1, 0.1) })
     setComponent(entity, VisibleComponent)
-    setComponent(entity, NameComponent, 'hello')
-    setComponent(entity, PrimitiveGeometryComponent, { geometryType: 1 })
-
-    /*
-
-    setComponent(entity, ColliderComponent, {
-      bodyType: 0, // dynamic
-      shapeType: 1, // sphere
-      collisionMask: 1,
-      restitution: 0.5
-    })
-
-    const rigidBodyDesc = RigidBodyDesc.dynamic()
-    Physics.createRigidBody(entity, getState(PhysicsState).physicsWorld, rigidBodyDesc, [])
-  
-    const rigidBody = getComponent(entity, RigidBodyComponent)
-  
-    const interactionGroups = getInteractionGroups(CollisionGroups.Default, DefaultCollisionMask)
-    const colliderDesc = ColliderDesc.ball(0.1).setCollisionGroups(interactionGroups)
-    colliderDesc.setRestitution(1)
-  
-    Physics.createColliderAndAttachToRigidBody(getState(PhysicsState).physicsWorld, colliderDesc, rigidBody.body)
-  
-    */
+    setComponent(entity, NameComponent, entityUUID)
+    setComponent(entity, PrimitiveGeometryComponent, { geometryType: GeometryTypeEnum.SphereGeometry })
+    setComponent(entity, RigidBodyComponent, { type: 'dynamic' })
+    setComponent(entity, ColliderComponent, { shape: 'sphere' })
 
     if (isClient) return
 
-    // positions are networked intrinsically
+    const angle = Math.random() * Math.PI * 2
+    const direction = new Vector3(Math.sin(angle), 0, Math.cos(angle))
+    const velocity = 0.025 + Math.random() * 0.01
+    getComponent(entity, RigidBodyComponent).body.applyImpulse(direction.multiplyScalar(velocity), true)
+  }, [entity])
 
-    const x = Math.random() * 10
-    const y = 0
-    const z = Math.random() * 10
-    const transform = getComponent(entity, TransformComponent)
-    transform.position.set(x, y, z)
-
-    // forces are networked intrinsically
-
-    //const angle = Math.random()*Math.PI*2
-    //const direction = new Vector3( Math.sin(angle),0,Math.cos(angle))
-    //const velocity = 0.025 + Math.random()*0.01
-    //rigidBody.body.applyImpulse(direction.multiplyScalar(velocity), true)
-  }, [])
   return null
 }
 
-//
-// Observe spawn events and make sure there are sub reactors that reflect them
-// Make sub-reactors for each entry
-//
+/**
+ * Observe spawn events and create a sub-reactor for each entry in the basic state
+ */
 
 const reactor = () => {
   const basicState = useHookstate(getMutableState(BasicState))
   return (
     <>
       {basicState.keys.map((entityUUID: EntityUUID) => (
-        <ArtifactReactor entityUUID={entityUUID} />
+        <ArtifactReactor key={entityUUID} entityUUID={entityUUID} />
       ))}
     </>
   )
 }
 
 let counter = 0
+const spawnRate = 3
 
-//
-// Periodically change the basic state
-//
+/**
+ * Spawn a new basic entity every 3 seconds
+ */
 
 const execute = () => {
-  if (isClient) return
-  counter++
-  if (counter & 255) return
+  /** Only run this on the server */
+  if (isClient || !NetworkState.worldNetwork) return
 
-  const entityUUID = `basic-${counter}` as EntityUUID
-  const prefab = 'ee.basic.ball'
-  const action = BasicActions.spawnAction({ entityUUID, prefab })
+  const { deltaSeconds, elapsedSeconds } = getState(ECSState)
+
+  counter += deltaSeconds
+
+  if (counter < spawnRate) return
+  counter = 0
+
+  const entityUUID = `basic-${elapsedSeconds}` as EntityUUID
+  const action = BasicActions.spawnAction({ entityUUID, position: new Vector3(Math.random(), 1, Math.random()) })
   dispatchAction(action)
 }
 
-//
-// System
-//
+/**
+ * System to register the execute function and reactor
+ */
 
 export const BasicSystem = defineSystem({
   uuid: 'basic.system',
   reactor,
   execute,
-  insert: { after: PhysicsSystem }
+  insert: { after: PresentationSystemGroup }
 })
