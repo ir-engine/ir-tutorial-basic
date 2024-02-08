@@ -37,7 +37,7 @@ import { Vector3 } from 'three'
 const BasicActions = {
   spawnAction: defineAction(
     WorldNetworkAction.spawnObject.extend({
-      type: 'ee.basic.SPAWN_BALL',
+      type: 'ee.basic.SPAWN_OBJECT',
       $topic: NetworkTopics.world
     })
   )
@@ -68,7 +68,7 @@ const BasicState = defineState({
  * A reactor such that each basic state record has an associated a visual artifact
  */
 
-const ArtifactReactor = ({ entityUUID }: { entityUUID: EntityUUID }) => {
+const BasicObject = ({ entityUUID }: { entityUUID: EntityUUID }) => {
   /** Entity creation and destruction is handled by EntityNetworkState */
   const entity = UUIDComponent.useEntityByUUID(entityUUID)
 
@@ -102,7 +102,7 @@ const reactor = () => {
   return (
     <>
       {basicState.keys.map((entityUUID: EntityUUID) => (
-        <ArtifactReactor key={entityUUID} entityUUID={entityUUID} />
+        <BasicObject key={entityUUID} entityUUID={entityUUID} />
       ))}
     </>
   )
