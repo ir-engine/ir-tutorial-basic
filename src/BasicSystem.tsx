@@ -16,7 +16,7 @@ import { NetworkTopics } from '@etherealengine/spatial/src/networking/classes/Ne
 import { WorldNetworkAction } from '@etherealengine/spatial/src/networking/functions/WorldNetworkAction'
 
 import { isClient } from '@etherealengine/common/src/utils/getEnvironment'
-import { PresentationSystemGroup, defineSystem, getComponent, setComponent } from '@etherealengine/ecs'
+import { SimulationSystemGroup, defineSystem, getComponent, setComponent } from '@etherealengine/ecs'
 import { ECSState } from '@etherealengine/ecs/src/ECSState'
 import { PrimitiveGeometryComponent } from '@etherealengine/engine/src/scene/components/PrimitiveGeometryComponent'
 import { GeometryTypeEnum } from '@etherealengine/engine/src/scene/constants/GeometryTypeEnum'
@@ -61,6 +61,21 @@ const BasicState = defineState({
       const state = getMutableState(BasicState)
       state[action.entityUUID].set(none)
     })
+  },
+
+  /**
+   * Observe spawn events and create a sub-reactor for each entry in the basic state
+   */
+
+  reactor: () => {
+    const basicState = useHookstate(getMutableState(BasicState))
+    return (
+      <>
+        {basicState.keys.map((entityUUID: EntityUUID) => (
+          <BasicObject key={entityUUID} entityUUID={entityUUID} />
+        ))}
+      </>
+    )
   }
 })
 
@@ -93,21 +108,6 @@ const BasicObject = ({ entityUUID }: { entityUUID: EntityUUID }) => {
   return null
 }
 
-/**
- * Observe spawn events and create a sub-reactor for each entry in the basic state
- */
-
-const reactor = () => {
-  const basicState = useHookstate(getMutableState(BasicState))
-  return (
-    <>
-      {basicState.keys.map((entityUUID: EntityUUID) => (
-        <BasicObject key={entityUUID} entityUUID={entityUUID} />
-      ))}
-    </>
-  )
-}
-
 let counter = 0
 const spawnRate = 3
 
@@ -136,8 +136,7 @@ const execute = () => {
  */
 
 export const BasicSystem = defineSystem({
-  uuid: 'basic.system',
-  reactor,
+  uuid: 'ee.basic.system',
   execute,
-  insert: { after: PresentationSystemGroup }
+  insert: { with: SimulationSystemGroup }
 })
