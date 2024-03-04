@@ -132,7 +132,7 @@ const execute = () => {
 }
 
 /**
- * System to register the execute function and reactor
+ * System to register the execute function
  */
 
 export const BasicSystem = defineSystem({
