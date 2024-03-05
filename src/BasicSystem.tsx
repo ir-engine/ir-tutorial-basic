@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 
-import { EntityUUID } from '@etherealengine/common/src/interfaces/EntityUUID'
+import { EntityUUID } from '@etherealengine/ecs'
 import { isClient } from '@etherealengine/common/src/utils/getEnvironment'
 import { SimulationSystemGroup, defineSystem, getComponent, setComponent } from '@etherealengine/ecs'
 import { ECSState } from '@etherealengine/ecs/src/ECSState'
