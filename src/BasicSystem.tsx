@@ -1,5 +1,11 @@
 import React, { useEffect } from 'react'
 
+import { EntityUUID } from '@etherealengine/ecs'
+import { isClient } from '@etherealengine/common/src/utils/getEnvironment'
+import { SimulationSystemGroup, defineSystem, getComponent, setComponent } from '@etherealengine/ecs'
+import { ECSState } from '@etherealengine/ecs/src/ECSState'
+import { PrimitiveGeometryComponent } from '@etherealengine/engine/src/scene/components/PrimitiveGeometryComponent'
+import { GeometryTypeEnum } from '@etherealengine/engine/src/scene/constants/GeometryTypeEnum'
 import {
   defineAction,
   defineState,
@@ -9,23 +15,13 @@ import {
   none,
   useHookstate
 } from '@etherealengine/hyperflux'
-
-import { EntityUUID } from '@etherealengine/common/src/interfaces/EntityUUID'
-
-import { NetworkTopics } from '@etherealengine/spatial/src/networking/classes/Network'
-import { WorldNetworkAction } from '@etherealengine/spatial/src/networking/functions/WorldNetworkAction'
-
-import { isClient } from '@etherealengine/common/src/utils/getEnvironment'
-import { SimulationSystemGroup, defineSystem, getComponent, setComponent } from '@etherealengine/ecs'
-import { ECSState } from '@etherealengine/ecs/src/ECSState'
-import { PrimitiveGeometryComponent } from '@etherealengine/engine/src/scene/components/PrimitiveGeometryComponent'
-import { GeometryTypeEnum } from '@etherealengine/engine/src/scene/constants/GeometryTypeEnum'
+import { NetworkState, NetworkTopics, WorldNetworkAction } from '@etherealengine/network'
 import { NameComponent } from '@etherealengine/spatial/src/common/NameComponent'
-import { UUIDComponent } from '@etherealengine/spatial/src/common/UUIDComponent'
-import { NetworkState } from '@etherealengine/spatial/src/networking/NetworkState'
+import { UUIDComponent } from '@etherealengine/network'
 import { ColliderComponent } from '@etherealengine/spatial/src/physics/components/ColliderComponent'
 import { RigidBodyComponent } from '@etherealengine/spatial/src/physics/components/RigidBodyComponent'
 import { VisibleComponent } from '@etherealengine/spatial/src/renderer/components/VisibleComponent'
+import { SpawnObjectActions } from '@etherealengine/spatial/src/transform/SpawnObjectActions'
 import { TransformComponent } from '@etherealengine/spatial/src/transform/components/TransformComponent'
 import { Vector3 } from 'three'
 
@@ -36,7 +32,7 @@ import { Vector3 } from 'three'
 
 const BasicActions = {
   spawnAction: defineAction(
-    WorldNetworkAction.spawnObject.extend({
+    SpawnObjectActions.spawnObject.extend({
       type: 'ee.basic.SPAWN_OBJECT',
       $topic: NetworkTopics.world
     })
@@ -57,7 +53,7 @@ const BasicState = defineState({
       const state = getMutableState(BasicState)
       state[action.entityUUID].merge({})
     }),
-    onDestroyObject: WorldNetworkAction.destroyObject.receive((action) => {
+    onDestroyObject: WorldNetworkAction.destroyEntity.receive((action) => {
       const state = getMutableState(BasicState)
       state[action.entityUUID].set(none)
     })
