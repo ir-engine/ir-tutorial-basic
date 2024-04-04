@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 
-import { EntityUUID } from '@etherealengine/ecs'
+import { Engine, EntityUUID } from '@etherealengine/ecs'
 import { isClient } from '@etherealengine/common/src/utils/getEnvironment'
 import { SimulationSystemGroup, defineSystem, getComponent, setComponent } from '@etherealengine/ecs'
 import { ECSState } from '@etherealengine/ecs/src/ECSState'
@@ -123,7 +123,11 @@ const execute = () => {
   counter = 0
 
   const entityUUID = `basic-${elapsedSeconds}` as EntityUUID
-  const action = BasicActions.spawnAction({ entityUUID, position: new Vector3(Math.random(), 1, Math.random()) })
+  const action = BasicActions.spawnAction({ 
+    parentUUID: getComponent(Engine.instance.originEntity, UUIDComponent),
+    entityUUID,
+    position: new Vector3(Math.random(), 1, Math.random())
+  })
   dispatchAction(action)
 }
 
