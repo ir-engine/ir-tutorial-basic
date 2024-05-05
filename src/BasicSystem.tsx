@@ -1,8 +1,15 @@
 import React, { useEffect } from 'react'
 
-import { Engine, EntityUUID } from '@etherealengine/ecs'
 import { isClient } from '@etherealengine/common/src/utils/getEnvironment'
-import { SimulationSystemGroup, defineSystem, getComponent, setComponent } from '@etherealengine/ecs'
+import {
+  Engine,
+  EntityUUID,
+  SimulationSystemGroup,
+  UUIDComponent,
+  defineSystem,
+  getComponent,
+  setComponent
+} from '@etherealengine/ecs'
 import { ECSState } from '@etherealengine/ecs/src/ECSState'
 import { PrimitiveGeometryComponent } from '@etherealengine/engine/src/scene/components/PrimitiveGeometryComponent'
 import { GeometryTypeEnum } from '@etherealengine/engine/src/scene/constants/GeometryTypeEnum'
@@ -17,7 +24,7 @@ import {
 } from '@etherealengine/hyperflux'
 import { NetworkState, NetworkTopics, WorldNetworkAction } from '@etherealengine/network'
 import { NameComponent } from '@etherealengine/spatial/src/common/NameComponent'
-import { UUIDComponent } from '@etherealengine/ecs'
+import { Physics } from '@etherealengine/spatial/src/physics/classes/Physics'
 import { ColliderComponent } from '@etherealengine/spatial/src/physics/components/ColliderComponent'
 import { RigidBodyComponent } from '@etherealengine/spatial/src/physics/components/RigidBodyComponent'
 import { VisibleComponent } from '@etherealengine/spatial/src/renderer/components/VisibleComponent'
@@ -98,7 +105,7 @@ const BasicObject = ({ entityUUID }: { entityUUID: EntityUUID }) => {
     const angle = Math.random() * Math.PI * 2
     const direction = new Vector3(Math.sin(angle), 0, Math.cos(angle))
     const velocity = 0.025 + Math.random() * 0.01
-    getComponent(entity, RigidBodyComponent).body.applyImpulse(direction.multiplyScalar(velocity), true)
+    Physics.applyImpulse(entity, direction.multiplyScalar(velocity))
   }, [entity])
 
   return null
@@ -123,7 +130,7 @@ const execute = () => {
   counter = 0
 
   const entityUUID = `basic-${elapsedSeconds}` as EntityUUID
-  const action = BasicActions.spawnAction({ 
+  const action = BasicActions.spawnAction({
     parentUUID: getComponent(Engine.instance.originEntity, UUIDComponent),
     entityUUID,
     position: new Vector3(Math.random(), 1, Math.random())
