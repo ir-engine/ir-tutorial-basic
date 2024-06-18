@@ -1,1 +1,12 @@
-[{"id":"3637eb4b-8757-4e5e-8526-15d1709dfeb1","sid":"aic2wqJ-","hash":"7bb2198260076a64fcd96d8cbc15b0443e0a3ab8069171b13556c56c0eb2f509","url":"","key":"projects/ee-tutorial-basic/thumbnails/ee-tutorial-basicbasic.gltf-thumbnail.png","mimeType":"application/octet-stream","project":"ee-tutorial-basic","createdAt":"2024-04-30T04:10:18.000Z","updatedAt":"2024-04-30T04:10:18.000Z"},{"id":"ea0fdbbb-5f81-4a5c-b25a-cb297718df86","sid":"PWdEBM6P","hash":"43c58f03a98b2f744e4fe7858017c8625e2ae35f7ad122a66c1b173e53d1632f","url":"","key":"projects/ee-tutorial-basic/basic.gltf","mimeType":"application/octet-stream","project":"ee-tutorial-basic","thumbnailURL":"https://192.168.0.16:8642/projects/ee-tutorial-basic/thumbnails/ee-tutorial-basicbasic.gltf-thumbnail.png","thumbnailType":"automatic","createdAt":"2024-04-30T04:07:06.000Z","updatedAt":"2024-04-30T04:10:18.000Z"}]
+{
+  "thumbnails/ee-tutorial-basicbasic.gltf-thumbnail.png": {
+    "hash": "7bb2198260076a64fcd96d8cbc15b0443e0a3ab8069171b13556c56c0eb2f509",
+    "type": "file"
+  },
+  "basic.gltf": {
+    "hash": "43c58f03a98b2f744e4fe7858017c8625e2ae35f7ad122a66c1b173e53d1632f",
+    "type": "file",
+    "thumbnailKey": "projects/ee-tutorial-basic/thumbnails/ee-tutorial-basicbasic.gltf-thumbnail.png",
+    "thumbnailMode": "automatic"
+  }
+}
