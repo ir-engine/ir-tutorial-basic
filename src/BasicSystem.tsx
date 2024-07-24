@@ -105,7 +105,8 @@ const BasicObject = ({ entityUUID }: { entityUUID: EntityUUID }) => {
     const angle = Math.random() * Math.PI * 2
     const direction = new Vector3(Math.sin(angle), 0, Math.cos(angle))
     const velocity = 0.025 + Math.random() * 0.01
-    Physics.applyImpulse(entity, direction.multiplyScalar(velocity))
+    const world = Physics.getWorld(entity)!
+    Physics.applyImpulse(world, entity, direction.multiplyScalar(velocity))
   }, [entity])
 
   return null
