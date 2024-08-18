@@ -1,12 +1,12 @@
 {
-  "thumbnails/ee-tutorial-basicbasic.gltf-thumbnail.png": {
+  "thumbnails/ir-tutorial-basicbasic.gltf-thumbnail.png": {
     "hash": "7bb2198260076a64fcd96d8cbc15b0443e0a3ab8069171b13556c56c0eb2f509",
     "type": "file"
   },
   "basic.gltf": {
     "hash": "43c58f03a98b2f744e4fe7858017c8625e2ae35f7ad122a66c1b173e53d1632f",
     "type": "file",
-    "thumbnailKey": "projects/etherealengine/ee-tutorial-basic/thumbnails/ee-tutorial-basicbasic.gltf-thumbnail.png",
+    "thumbnailKey": "projects/ir-engine/ir-tutorial-basic/thumbnails/ir-tutorial-basicbasic.gltf-thumbnail.png",
     "thumbnailMode": "automatic"
   }
 }

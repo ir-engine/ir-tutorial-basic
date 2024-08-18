@@ -1,11 +1,8 @@
 {
-  "name": "@etherealengine/ee-tutorial-basic",
+  "name": "@ir-engine/ir-tutorial-basic",
   "version": "0.0.0",
   "description": "",
   "main": "",
-  "etherealEngine": {
-    "version": "1.5.0"
-  },
   "scripts": {
     "check-errors": "tsc --noemit",
     "test": "exit 0",

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 
-import { isClient } from '@etherealengine/common/src/utils/getEnvironment'
+import { isClient } from '@ir-engine/common/src/utils/getEnvironment'
 import {
   Engine,
   EntityUUID,
@@ -9,10 +9,10 @@ import {
   defineSystem,
   getComponent,
   setComponent
-} from '@etherealengine/ecs'
-import { ECSState } from '@etherealengine/ecs/src/ECSState'
-import { PrimitiveGeometryComponent } from '@etherealengine/engine/src/scene/components/PrimitiveGeometryComponent'
-import { GeometryTypeEnum } from '@etherealengine/engine/src/scene/constants/GeometryTypeEnum'
+} from '@ir-engine/ecs'
+import { ECSState } from '@ir-engine/ecs/src/ECSState'
+import { PrimitiveGeometryComponent } from '@ir-engine/engine/src/scene/components/PrimitiveGeometryComponent'
+import { GeometryTypeEnum } from '@ir-engine/engine/src/scene/constants/GeometryTypeEnum'
 import {
   defineAction,
   defineState,
@@ -21,15 +21,15 @@ import {
   getState,
   none,
   useHookstate
-} from '@etherealengine/hyperflux'
-import { NetworkState, NetworkTopics, WorldNetworkAction } from '@etherealengine/network'
-import { NameComponent } from '@etherealengine/spatial/src/common/NameComponent'
-import { Physics } from '@etherealengine/spatial/src/physics/classes/Physics'
-import { ColliderComponent } from '@etherealengine/spatial/src/physics/components/ColliderComponent'
-import { RigidBodyComponent } from '@etherealengine/spatial/src/physics/components/RigidBodyComponent'
-import { VisibleComponent } from '@etherealengine/spatial/src/renderer/components/VisibleComponent'
-import { SpawnObjectActions } from '@etherealengine/spatial/src/transform/SpawnObjectActions'
-import { TransformComponent } from '@etherealengine/spatial/src/transform/components/TransformComponent'
+} from '@ir-engine/hyperflux'
+import { NetworkState, NetworkTopics, WorldNetworkAction } from '@ir-engine/network'
+import { NameComponent } from '@ir-engine/spatial/src/common/NameComponent'
+import { Physics } from '@ir-engine/spatial/src/physics/classes/Physics'
+import { ColliderComponent } from '@ir-engine/spatial/src/physics/components/ColliderComponent'
+import { RigidBodyComponent } from '@ir-engine/spatial/src/physics/components/RigidBodyComponent'
+import { VisibleComponent } from '@ir-engine/spatial/src/renderer/components/VisibleComponent'
+import { SpawnObjectActions } from '@ir-engine/spatial/src/transform/SpawnObjectActions'
+import { TransformComponent } from '@ir-engine/spatial/src/transform/components/TransformComponent'
 import { Vector3 } from 'three'
 
 /**

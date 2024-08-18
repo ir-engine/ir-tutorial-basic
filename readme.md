@@ -6,7 +6,7 @@
 
 ```
 cd etherealengine/packages/projects/projects
-gh repo clone EtherealEngine/ee-tutorial-basic
+gh repo clone EtherealEngine/ir-tutorial-basic
 cd ../../../
 ```
 
