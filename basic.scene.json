@@ -49,7 +49,7 @@
             "bakeType": "Baked",
             "resolution": 2048,
             "refreshMode": "OnAwake",
-            "envMapOrigin": "__$project$__/default-project/default.envmap.ktx2",
+            "envMapOrigin": "__$project$__/etherealengine/default-project/default.envmap.ktx2",
             "boxProjection": true
           }
         },
@@ -294,7 +294,7 @@
           "props": {
             "backgroundColor": 0,
             "equirectangularPath": "",
-            "cubemapPath": "__$project$__/default-project/assets/skyboxsun25deg/",
+            "cubemapPath": "__$project$__/etherealengine/default-project/assets/skyboxsun25deg/",
             "backgroundType": 1,
             "skyboxProps": {
               "turbidity": 10,
