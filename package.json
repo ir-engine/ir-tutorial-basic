@@ -8,8 +8,7 @@
     "test": "exit 0",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "format-scss": "stylelint \"**/*.scss\" --fix",
-    "format-staged": "lint-staged",
-    "precommit": "no-master-commits -b main"
+    "format-staged": "lint-staged"
   },
   "peerDependencies": {},
   "dependencies": {},
@@ -20,10 +19,10 @@
   ],
   "lint-staged": {
     "*.{ts,tsx}": [
-      "prettier --write"
+      "prettier --write \"**/*.{ts,tsx}\""
     ],
     "*.scss": [
-      "stylelint --fix"
+      "stylelint \"**/*.scss\" --fix"
     ]
   }
 }
